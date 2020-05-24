@@ -19,15 +19,17 @@ namespace RouteMeter.Classes.Commands
 
     protected override string BaseCommand => "0D";
 
-    protected override int GetValue(string aRawData)
+    protected override bool GetValue(string aRawData, out int aExtractedData)
     {
       try
       {
-        return Convert.ToInt32(aRawData, 16);
+        aExtractedData = Convert.ToInt32(aRawData, 16);
+        return true;
       }
       catch
       {
-        return int.MinValue;
+        aExtractedData = int.MinValue;
+        return false;
       }
     }
   }

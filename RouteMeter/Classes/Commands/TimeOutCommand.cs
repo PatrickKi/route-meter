@@ -32,9 +32,10 @@ namespace RouteMeter.Classes.Commands
 
     protected override string BaseCommand => "ST";
 
-    protected override string GetValue(string aRawData)
+    protected override bool GetValue(string aRawData, out string aExtractedData)
     {
-      return aRawData;
+      aExtractedData = aRawData;
+      return true;
     }
   }
 }

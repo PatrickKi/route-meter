@@ -59,10 +59,12 @@ namespace RouteMeter.Classes.Commands
             string lExtractedData = ValidateAndExtractData(lResponse);
             if (!string.IsNullOrWhiteSpace(lExtractedData))
             {
-              T lValue = GetValue(lResponse);
-              aCallbackDataReceived?.Invoke(lValue);
-              return true;
-            }            
+              if (GetValue(lResponse, out T lValue))
+              {
+                aCallbackDataReceived?.Invoke(lValue);
+                return true;
+              }
+            }
           }
         }
       }
@@ -98,7 +100,7 @@ namespace RouteMeter.Classes.Commands
       return lResult;
     }
 
-    protected abstract T GetValue(string aRawData);
+    protected abstract bool GetValue(string aRawData, out T aExtractedData);
     //return (T)Convert.ChangeType(aInput, typeof(T));
 
     public string ReadResponse()
