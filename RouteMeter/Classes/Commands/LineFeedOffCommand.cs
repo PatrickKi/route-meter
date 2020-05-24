@@ -13,10 +13,15 @@ using Android.Widget;
 
 namespace RouteMeter.Classes.Commands
 {
-  public class LineFeedCommand : ObdCommandBase
+  public class LineFeedOffCommand : ObdSetupCommand<string>
   {
-    public LineFeedCommand(BluetoothSocket aSocket) : base(aSocket) { }
+    public LineFeedOffCommand(BluetoothSocket aSocket) : base(aSocket) { }
 
-    protected override string BaseCommand => "AT L0";
+    protected override string BaseCommand => "L0";
+
+    protected override string GetValue(string aRawData)
+    {
+      return aRawData;
+    }
   }
 }

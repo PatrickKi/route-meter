@@ -13,11 +13,11 @@ using Android.Widget;
 
 namespace RouteMeter.Classes.Commands
 {
-  class EchoOffCommand : ObdSetupCommand<string>
+  public class SetToDefaultCommand : ObdSetupCommand<string>
   {
-    public EchoOffCommand(BluetoothSocket aSocket) : base(aSocket) { }
+    public SetToDefaultCommand(BluetoothSocket aSocket) : base(aSocket) { }
 
-    protected override string BaseCommand => "E0";
+    protected override string BaseCommand => "D";
 
     protected override string GetValue(string aRawData)
     {

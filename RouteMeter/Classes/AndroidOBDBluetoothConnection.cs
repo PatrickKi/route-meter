@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -26,8 +27,8 @@ namespace RouteMeter.Classes
 {
   public class AndroidOBDBluetoothConnection
   {
-    #region Static Methods
-    private static AndroidOBDBluetoothConnection fCurrent;
+    #region Static Properties
+    protected static AndroidOBDBluetoothConnection fCurrent;
     public static AndroidOBDBluetoothConnection Current
     {
       get
@@ -60,6 +61,11 @@ namespace RouteMeter.Classes
     /// </summary>
     protected const int BLUETOOTH_ENABLE_TIMEOUT = 5000;
 
+    /// <summary>
+    /// Default time between data updates in milliseconds.
+    /// </summary>
+    protected const int DEFAULT_SAMPLE_PERIOD = 500;
+
     public const string DEFAULT_OBDII = "OBDII";
     public const string PATTERN_OBD = "OBD";
     #endregion
@@ -85,7 +91,7 @@ namespace RouteMeter.Classes
     /// <param name="aDeviceName">Device to connect to.</param>
     /// <param name="aCallbackError">Called when there was an error while connecting to a device.</param>
     /// <param name="aSamplePeriod">Time period in milliseconds.</param>
-    public void Start(string aDeviceName, Action aCallbackError, int aSamplePeriod = 100)
+    public void Start(string aDeviceName, Action aCallbackError, int aSamplePeriod = DEFAULT_SAMPLE_PERIOD)
     {
       Task.Run(async () =>
       {
@@ -107,13 +113,17 @@ namespace RouteMeter.Classes
     public void Cancel()
     {
       CancelToken?.Cancel();
-      ConnectedSocket = null;
+      if (ConnectedSocket != null)
+      {
+        ConnectedSocket.Close();
+        ConnectedSocket = null;
+      }
     }
 
     private async Task WorkerTask(string aDeviceName, Action aCallbackError, int aSamplePeriod)
     {
       DateTime lLastDataReceived = DateTime.Now;
-      Task lSleeper = Task.Delay(aSamplePeriod);
+      //OnDataReceived?.Invoke("SamplePeriod: Data updated every " + aSamplePeriod + " ms");
 
       if (await InitBluetoothSocket(aDeviceName) == false)
       {
@@ -127,13 +137,15 @@ namespace RouteMeter.Classes
       {
         try
         {
-          await lSleeper;
+          await Task.Delay(aSamplePeriod);
 
           bool lNewDataReceived = false;
 
-          OnDataReceived?.Invoke("Before data reading...");
-          lNewDataReceived = new SpeedCommand(ConnectedSocket).Send(OnDataReceived) && true;
-          OnDataReceived?.Invoke("After data reading...");
+          //TODO OBD fault codes at start and end of route
+
+          //connect command calls via | operator
+          lNewDataReceived =
+            new SpeedCommand(ConnectedSocket).Send((value) => { OnDataReceived?.Invoke(value.ToString()); ObdDataProvider.Current.Speed.Update(value); });
 
           if (lNewDataReceived)
             lLastDataReceived = DateTime.Now;
@@ -205,19 +217,16 @@ namespace RouteMeter.Classes
           //}
           #endregion
         }
-        catch (Java.IO.IOException aConnectionException)
-        {
-          aCallbackError?.Invoke();
-          break;
-        }
+        //catch (Java.IO.IOException aConnectionException)
+        //{
+        //  aCallbackError?.Invoke();
+        //  break;
+        //}
         catch (Exception ex)
         {
           string exm = ex.Message;
-        }
-        finally
-        {
-          if (ConnectedSocket != null)
-            ConnectedSocket.Close();
+          OnDataReceived?.Invoke(exm);
+          Cancel();
         }
       }
 
@@ -281,12 +290,11 @@ namespace RouteMeter.Classes
 
     private void InitConnectedOdbDevice()
     {
+      new SetToDefaultCommand(ConnectedSocket).Send(null);
       new ResetCommand(ConnectedSocket).Send(null);
-      Thread.Sleep(500);
       new EchoOffCommand(ConnectedSocket).Send(null);
-      new EchoOffCommand(ConnectedSocket).Send(null);
-      new LineFeedCommand(ConnectedSocket).Send(null);
-      new TimeOutCommand(ConnectedSocket, 250).Send(null);
+      new LineFeedOffCommand(ConnectedSocket).Send(null);
+      new TimeOutCommand(ConnectedSocket, 500).Send(null);
       new ProtocolSelectionCommand(ConnectedSocket, ObdProtocols.AUTO).Send(null);
       OnDataReceived?.Invoke("OBD connection initialized. Hopefully...");
     }

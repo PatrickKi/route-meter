@@ -13,10 +13,22 @@ using Android.Widget;
 
 namespace RouteMeter.Classes.Commands
 {
-  public class SpeedCommand : ObdCommandBase
+  public class SpeedCommand : ObdDataCommand<int>
   {
     public SpeedCommand(BluetoothSocket aSocket) : base(aSocket) { }
 
-    protected override string BaseCommand => "01 0D";
+    protected override string BaseCommand => "0D";
+
+    protected override int GetValue(string aRawData)
+    {
+      try
+      {
+        return Convert.ToInt32(aRawData, 16);
+      }
+      catch
+      {
+        return int.MinValue;
+      }
+    }
   }
 }

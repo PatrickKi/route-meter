@@ -13,15 +13,10 @@ using Android.Widget;
 
 namespace RouteMeter.Classes.Commands
 {
-  class EchoOffCommand : ObdSetupCommand<string>
+  public abstract class ObdDataCommand<T> : ObdCommandBase<T>
   {
-    public EchoOffCommand(BluetoothSocket aSocket) : base(aSocket) { }
+    public ObdDataCommand(BluetoothSocket aSocket, string aCommandParameter = null) : base(aSocket, aCommandParameter) { }
 
-    protected override string BaseCommand => "E0";
-
-    protected override string GetValue(string aRawData)
-    {
-      return aRawData;
-    }
+    protected override string CommandPrefix => PREFIX_SEND_DATA_CMD;
   }
 }

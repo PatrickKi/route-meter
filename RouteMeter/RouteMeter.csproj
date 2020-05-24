@@ -67,12 +67,16 @@
   <ItemGroup>
     <Compile Include="Activities\ActivtyNavigation.cs" />
     <Compile Include="Classes\Commands\EchoOffCommand.cs" />
-    <Compile Include="Classes\Commands\LineFeedCommand.cs" />
+    <Compile Include="Classes\Commands\LineFeedOffCommand.cs" />
     <Compile Include="Classes\Commands\ObdCommandBase.cs" />
+    <Compile Include="Classes\Commands\ObdDataCommand.cs" />
+    <Compile Include="Classes\Commands\ObdSetupCommand.cs" />
     <Compile Include="Classes\Commands\ProtocolSelectionCommand.cs" />
     <Compile Include="Classes\Commands\ResetCommand.cs" />
+    <Compile Include="Classes\Commands\SetToDefaultCommand.cs" />
     <Compile Include="Classes\Commands\SpeedCommand.cs" />
     <Compile Include="Classes\Commands\TimeOutCommand.cs" />
+    <Compile Include="Classes\ObdDataProvider.cs" />
     <Compile Include="Dialogs\DialogBase.cs" />
     <Compile Include="Dialogs\DialogWrapper.cs" />
     <Compile Include="Dialogs\DlgPreferences.cs" />

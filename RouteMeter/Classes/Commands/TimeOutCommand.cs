@@ -14,7 +14,7 @@ using Java.Lang;
 
 namespace RouteMeter.Classes.Commands
 {
-  public class TimeOutCommand : ObdCommandBase
+  public class TimeOutCommand : ObdSetupCommand<string>
   {
     /// <summary>
     /// Timeout command.
@@ -30,6 +30,11 @@ namespace RouteMeter.Classes.Commands
       CommandParameter = Integer.ToHexString(0xFF & lTimeout);
     }
 
-    protected override string BaseCommand => "AT ST";
+    protected override string BaseCommand => "ST";
+
+    protected override string GetValue(string aRawData)
+    {
+      return aRawData;
+    }
   }
 }

@@ -13,7 +13,7 @@ using Android.Widget;
 
 namespace RouteMeter.Classes.Commands
 {
-  class ProtocolSelectionCommand : ObdCommandBase
+  class ProtocolSelectionCommand : ObdSetupCommand<string>
   {
     /// <summary>
     /// Protocol selection command.
@@ -22,6 +22,11 @@ namespace RouteMeter.Classes.Commands
     /// <param name="aProtocol">Protocol char from ObdProtocols.cs</param>
     public ProtocolSelectionCommand(BluetoothSocket aSocket, char aProtocol) : base(aSocket, aProtocol.ToString()) { }
 
-    protected override string BaseCommand => "AT SP";
+    protected override string BaseCommand => "SP";
+
+    protected override string GetValue(string aRawData)
+    {
+      return aRawData;
+    }
   }
 }

@@ -42,6 +42,7 @@ namespace RouteMeter.Fragments
 
       AndroidOBDBluetoothConnection.Current.OnWorkerTaskEnded += () =>
       {
+        AddToLog("A worker thread as ended.");
         RunOnUiThread(UpdateView);
       };
 
@@ -197,7 +198,9 @@ namespace RouteMeter.Fragments
       TextView lTvSelectedDevice = View.FindViewById<TextView>(Resource.Id.tvDevice);
       TextView lTvLog = View.FindViewById<TextView>(Resource.Id.tvLog);
 
-      string lConnectedDevice = AndroidOBDBluetoothConnection.Current.ConnectedDevice?.Name;
+      try
+      {
+        string lConnectedDevice = AndroidOBDBluetoothConnection.Current.ConnectedDevice?.Name;
       if (string.IsNullOrWhiteSpace(lConnectedDevice))
       {
         lTvSelectedDevice.Text = GetString(Resource.String.no_device_connected);
@@ -209,8 +212,13 @@ namespace RouteMeter.Fragments
         lTvSelectedDevice.SetTextColor(ResourceHelper.GetColor(Activity, Resource.Color.colorPositive));
       }
 
-      lTvLog.Text = string.Join("\n", DebugLog);
-      lTvLog.MovementMethod = new ScrollingMovementMethod();
+        lTvLog.Text = string.Join("\n", DebugLog.ToList());
+        lTvLog.MovementMethod = new ScrollingMovementMethod();
+      }
+      catch(Exception ex)
+      {
+        DialogHelper.ShowToast(Activity, "Updateing Log Error: " + ex.Message, ToastLength.Long);
+      }
     }
   }
 }
