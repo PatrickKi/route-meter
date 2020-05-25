@@ -34,11 +34,16 @@ namespace RouteMeter.Fragments
       base.OnViewCreated(aView, aSavedInstanceState);
       Activity.SetTitle(Resource.String.app_name);
 
-      AndroidOBDBluetoothConnection.Current.OnDataReceived += (aData) =>
+      ObdDataProvider.OnDataUpdated += delegate
       {
-        AddToLog(aData);
         RunOnUiThread(UpdateView);
       };
+
+      //AndroidOBDBluetoothConnection.Current.OnDataReceived += (aData) =>
+      //{
+      //  AddToLog(aData);
+      //  RunOnUiThread(UpdateView);
+      //};
 
       AndroidOBDBluetoothConnection.Current.OnWorkerTaskEnded += () =>
       {
@@ -197,27 +202,38 @@ namespace RouteMeter.Fragments
     {
       TextView lTvSelectedDevice = View.FindViewById<TextView>(Resource.Id.tvDevice);
       TextView lTvLog = View.FindViewById<TextView>(Resource.Id.tvLog);
+      TextView lTvObdData = View.FindViewById<TextView>(Resource.Id.tvObdData);
 
       try
       {
         string lConnectedDevice = AndroidOBDBluetoothConnection.Current.ConnectedDevice?.Name;
-      if (string.IsNullOrWhiteSpace(lConnectedDevice))
-      {
-        lTvSelectedDevice.Text = GetString(Resource.String.no_device_connected);
-        lTvSelectedDevice.SetTextColor(ResourceHelper.GetColor(Activity, Resource.Color.colorNegative));
-      }
-      else
-      {
-        lTvSelectedDevice.Text = string.Format(GetString(Resource.String.connected_to_device), lConnectedDevice);
-        lTvSelectedDevice.SetTextColor(ResourceHelper.GetColor(Activity, Resource.Color.colorPositive));
-      }
+        if (string.IsNullOrWhiteSpace(lConnectedDevice))
+        {
+          lTvSelectedDevice.Text = GetString(Resource.String.no_device_connected);
+          lTvSelectedDevice.SetTextColor(ResourceHelper.GetColor(Activity, Resource.Color.colorNegative));
+        }
+        else
+        {
+          lTvSelectedDevice.Text = string.Format(GetString(Resource.String.connected_to_device), lConnectedDevice);
+          lTvSelectedDevice.SetTextColor(ResourceHelper.GetColor(Activity, Resource.Color.colorPositive));
+        }
 
         lTvLog.Text = string.Join("\n", DebugLog.ToList());
         lTvLog.MovementMethod = new ScrollingMovementMethod();
+
+        string lSpeed = ObdDataProvider.Current.Speed.Valid ? string.Format("{0} km/h", ObdDataProvider.Current.Speed.Value) : "-";
+        string lMileage = ObdDataProvider.Current.Mileage.Valid ? string.Format("{0:0.0} km", ObdDataProvider.Current.Mileage.Value) : "-";
+        string lFuelRate = ObdDataProvider.Current.FuelRate.Valid ? string.Format("{0:0.0} L/h", ObdDataProvider.Current.FuelRate.Value) : "-";
+        string lFuelLevel = ObdDataProvider.Current.FuelLevel.Valid ? string.Format("{0} %", ObdDataProvider.Current.FuelLevel.Value) : "-";
+        string lEngineRpm = ObdDataProvider.Current.EngineRpm.Valid ? string.Format("{0:0.0}", ObdDataProvider.Current.EngineRpm.Value) : "-";
+        string lAmbientTemp = ObdDataProvider.Current.AmbientTemperature.Valid ? string.Format("{0} °C", ObdDataProvider.Current.AmbientTemperature.Value) : "-";
+
+        lTvObdData.Text = string.Format("Vehicle speed: {0}\nMileage: {1}\nFuel rate: {2}\nFuel level: {3}\nEngine RPM: {4}\nAmbient Temperature: {5}",
+          lSpeed, lMileage, lFuelRate, lFuelLevel, lEngineRpm, lAmbientTemp);
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
-        DialogHelper.ShowToast(Activity, "Updateing Log Error: " + ex.Message, ToastLength.Long);
+        DialogHelper.ShowToast(Activity, "Updating UI Error: " + ex.Message, ToastLength.Long);
       }
     }
   }

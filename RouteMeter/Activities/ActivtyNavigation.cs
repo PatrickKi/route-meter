@@ -8,6 +8,7 @@ using Android.Support.V4.View;
 using Android.Support.V4.Widget;
 using Android.Support.V7.App;
 using Android.Views;
+using RouteMeter.Classes;
 using RouteMeter.Fragments;
 using RouteMeter.Helper;
 using Fragment = Android.Support.V4.App.Fragment;

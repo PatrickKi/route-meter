@@ -66,16 +66,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activities\ActivtyNavigation.cs" />
-    <Compile Include="Classes\Commands\EchoOffCommand.cs" />
-    <Compile Include="Classes\Commands\LineFeedOffCommand.cs" />
+    <Compile Include="Classes\Commands\DataCommands\AmbientTemperatureCommand.cs" />
+    <Compile Include="Classes\Commands\SetupCommands\EchoOffCommand.cs" />
+    <Compile Include="Classes\Commands\DataCommands\EngineRpmCommand.cs" />
+    <Compile Include="Classes\Commands\DataCommands\FuelLevelCommand.cs" />
+    <Compile Include="Classes\Commands\DataCommands\FuelRateCommand.cs" />
+    <Compile Include="Classes\Commands\SetupCommands\LineFeedOffCommand.cs" />
     <Compile Include="Classes\Commands\ObdCommandBase.cs" />
-    <Compile Include="Classes\Commands\ObdDataCommand.cs" />
-    <Compile Include="Classes\Commands\ObdSetupCommand.cs" />
-    <Compile Include="Classes\Commands\ProtocolSelectionCommand.cs" />
-    <Compile Include="Classes\Commands\ResetCommand.cs" />
-    <Compile Include="Classes\Commands\SetToDefaultCommand.cs" />
-    <Compile Include="Classes\Commands\SpeedCommand.cs" />
-    <Compile Include="Classes\Commands\TimeOutCommand.cs" />
+    <Compile Include="Classes\Commands\DataCommands\ObdDataCommand.cs" />
+    <Compile Include="Classes\Commands\SetupCommands\ObdSetupCommand.cs" />
+    <Compile Include="Classes\Commands\DataCommands\OdometerCommand.cs" />
+    <Compile Include="Classes\Commands\SetupCommands\ProtocolSelectionCommand.cs" />
+    <Compile Include="Classes\Commands\SetupCommands\ResetCommand.cs" />
+    <Compile Include="Classes\Commands\SetupCommands\SetToDefaultCommand.cs" />
+    <Compile Include="Classes\Commands\SetupCommands\SpacesOffCommand.cs" />
+    <Compile Include="Classes\Commands\DataCommands\SpeedCommand.cs" />
+    <Compile Include="Classes\Commands\SetupCommands\TimeOutCommand.cs" />
     <Compile Include="Classes\ObdDataProvider.cs" />
     <Compile Include="Dialogs\DialogBase.cs" />
     <Compile Include="Dialogs\DialogWrapper.cs" />
@@ -214,6 +220,7 @@
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
     Other similar extension points exist, see Microsoft.Common.targets.

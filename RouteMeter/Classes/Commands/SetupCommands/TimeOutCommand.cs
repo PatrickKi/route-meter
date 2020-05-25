@@ -12,7 +12,7 @@ using Android.Views;
 using Android.Widget;
 using Java.Lang;
 
-namespace RouteMeter.Classes.Commands
+namespace RouteMeter.Classes.Commands.SetupCommands
 {
   public class TimeOutCommand : ObdSetupCommand<string>
   {
@@ -36,6 +36,11 @@ namespace RouteMeter.Classes.Commands
     {
       aExtractedData = aRawData;
       return true;
+    }
+
+    protected override string ValidateAndExtractData(string aRawData)
+    {
+      return aRawData;
     }
   }
 }

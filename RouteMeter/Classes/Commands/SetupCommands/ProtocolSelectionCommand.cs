@@ -11,7 +11,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace RouteMeter.Classes.Commands
+namespace RouteMeter.Classes.Commands.SetupCommands
 {
   class ProtocolSelectionCommand : ObdSetupCommand<string>
   {
@@ -28,6 +28,11 @@ namespace RouteMeter.Classes.Commands
     {
       aExtractedData = aRawData;
       return true;
+    }
+
+    protected override string ValidateAndExtractData(string aRawData)
+    {
+      return aRawData;
     }
   }
 }

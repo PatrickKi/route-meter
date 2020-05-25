@@ -11,7 +11,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace RouteMeter.Classes.Commands
+namespace RouteMeter.Classes.Commands.DataCommands
 {
   public abstract class ObdDataCommand<T> : ObdCommandBase<T>
   {

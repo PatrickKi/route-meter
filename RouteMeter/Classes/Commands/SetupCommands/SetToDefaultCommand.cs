@@ -11,18 +11,23 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace RouteMeter.Classes.Commands
+namespace RouteMeter.Classes.Commands.SetupCommands
 {
-  public class ResetCommand : ObdSetupCommand<string>
+  public class SetToDefaultCommand : ObdSetupCommand<string>
   {
-    public ResetCommand(BluetoothSocket aSocket) : base(aSocket) { }
+    public SetToDefaultCommand(BluetoothSocket aSocket) : base(aSocket) { }
 
-    protected override string BaseCommand => "Z";
+    protected override string BaseCommand => "D";
 
     protected override bool GetValue(string aRawData, out string aExtractedData)
     {
       aExtractedData = aRawData;
       return true;
+    }
+
+    protected override string ValidateAndExtractData(string aRawData)
+    {
+      return aRawData;
     }
   }
 }

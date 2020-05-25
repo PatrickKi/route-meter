@@ -11,8 +11,11 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace RouteMeter.Classes.Commands
+namespace RouteMeter.Classes.Commands.DataCommands
 {
+  /// <summary>
+  /// Used to get the current vehicle speed. Value: 0 - 255 km/h
+  /// </summary>
   public class SpeedCommand : ObdDataCommand<int>
   {
     public SpeedCommand(BluetoothSocket aSocket) : base(aSocket) { }

@@ -88,12 +88,12 @@ namespace RouteMeter.Classes.Commands
       string lResult = string.Empty;
 
       if (aRawData.StartsWith(PREFIX_RECEIVE_DATA))
-        lResult = aRawData.Substring(3);
+        lResult = aRawData.Substring(2);
       else
         return string.Empty;
 
       if (lResult.StartsWith(CommandPrefix))
-        lResult = lResult.Substring(3);
+        lResult = lResult.Substring(2);
       else
         return string.Empty;
 

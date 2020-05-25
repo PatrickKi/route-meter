@@ -11,18 +11,23 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace RouteMeter.Classes.Commands
+namespace RouteMeter.Classes.Commands.SetupCommands
 {
-  public class LineFeedOffCommand : ObdSetupCommand<string>
+  class EchoOffCommand : ObdSetupCommand<string>
   {
-    public LineFeedOffCommand(BluetoothSocket aSocket) : base(aSocket) { }
+    public EchoOffCommand(BluetoothSocket aSocket) : base(aSocket) { }
 
-    protected override string BaseCommand => "L0";
+    protected override string BaseCommand => "E0";
 
     protected override bool GetValue(string aRawData, out string aExtractedData)
     {
       aExtractedData = aRawData;
       return true;
+    }
+
+    protected override string ValidateAndExtractData(string aRawData)
+    {
+      return aRawData;
     }
   }
 }

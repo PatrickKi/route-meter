@@ -19,6 +19,8 @@ using Java.Lang;
 using Java.Net;
 using Java.Util;
 using RouteMeter.Classes.Commands;
+using RouteMeter.Classes.Commands.DataCommands;
+using RouteMeter.Classes.Commands.SetupCommands;
 using RouteMeter.Helper;
 using Exception = System.Exception;
 using Thread = System.Threading.Thread;
@@ -64,7 +66,7 @@ namespace RouteMeter.Classes
     /// <summary>
     /// Default time between data updates in milliseconds.
     /// </summary>
-    protected const int DEFAULT_SAMPLE_PERIOD = 500;
+    protected const int DEFAULT_SAMPLE_PERIOD = 250;
 
     public const string DEFAULT_OBDII = "OBDII";
     public const string PATTERN_OBD = "OBD";
@@ -145,7 +147,12 @@ namespace RouteMeter.Classes
 
           //connect command calls via | operator
           lNewDataReceived =
-            new SpeedCommand(ConnectedSocket).Send((value) => { OnDataReceived?.Invoke(value.ToString()); ObdDataProvider.Current.Speed.Update(value); });
+            new SpeedCommand(ConnectedSocket).Send((value) => { ObdDataProvider.Current.Speed.Update(value); }) |
+            new OdometerCommand(ConnectedSocket).Send((value) => { ObdDataProvider.Current.Mileage.Update(value); }) |
+            new FuelRateCommand(ConnectedSocket).Send((value) => { ObdDataProvider.Current.FuelRate.Update(value); }) |
+            new FuelLevelCommand(ConnectedSocket).Send((value) => { ObdDataProvider.Current.FuelLevel.Update(value); }) |
+            new EngineRpmCommand(ConnectedSocket).Send((value) => { ObdDataProvider.Current.EngineRpm.Update(value); }) |
+            new AmbientTemperatureCommand(ConnectedSocket).Send((value) => { ObdDataProvider.Current.AmbientTemperature.Update(value); });
 
           if (lNewDataReceived)
             lLastDataReceived = DateTime.Now;
@@ -290,12 +297,13 @@ namespace RouteMeter.Classes
 
     private void InitConnectedOdbDevice()
     {
-      new SetToDefaultCommand(ConnectedSocket).Send(null);
-      new ResetCommand(ConnectedSocket).Send(null);
-      new EchoOffCommand(ConnectedSocket).Send(null);
-      new LineFeedOffCommand(ConnectedSocket).Send(null);
-      new TimeOutCommand(ConnectedSocket, 500).Send(null);
-      new ProtocolSelectionCommand(ConnectedSocket, ObdProtocols.AUTO).Send(null);
+      new SetToDefaultCommand(ConnectedSocket).Send((aValue) => { OnDataReceived?.Invoke(aValue); });
+      new ResetCommand(ConnectedSocket).Send((aValue) => { OnDataReceived?.Invoke(aValue); });
+      new SpacesOffCommand(ConnectedSocket).Send((aValue) => { OnDataReceived?.Invoke(aValue); });
+      new EchoOffCommand(ConnectedSocket).Send((aValue) => { OnDataReceived?.Invoke(aValue); });
+      new LineFeedOffCommand(ConnectedSocket).Send((aValue) => { OnDataReceived?.Invoke(aValue); });
+      new TimeOutCommand(ConnectedSocket, 500).Send((aValue) => { OnDataReceived?.Invoke(aValue); });
+      new ProtocolSelectionCommand(ConnectedSocket, ObdProtocols.AUTO).Send((aValue) => { OnDataReceived?.Invoke(aValue); });
       OnDataReceived?.Invoke("OBD connection initialized. Hopefully...");
     }
 
